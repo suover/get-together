@@ -35,6 +35,6 @@
 - IntelliJ
 
 ### 🗂️ **ERD**
-![{A5BAA3FC-423C-40BC-B697-6DCCFB429973}](https://github.com/user-attachments/assets/3d2074c6-2a79-48a7-a433-2419ab2866ab)
+![{95D697DC-1501-4415-A464-2D8702F93C0B}](https://github.com/user-attachments/assets/c803a23d-67d8-4057-a758-dd995d44fba0)
 
 ### 🔗 [ERD 링크](https://www.erdcloud.com/d/oCyiHz4DwMWK3Pybe)
