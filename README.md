@@ -38,3 +38,39 @@
 ![{95D697DC-1501-4415-A464-2D8702F93C0B}](https://github.com/user-attachments/assets/c803a23d-67d8-4057-a758-dd995d44fba0)
 
 ### 🔗 [ERD 링크](https://www.erdcloud.com/d/oCyiHz4DwMWK3Pybe)
+
+## 📋 **API**
+
+### 👤 **사용자 API**
+
+| 기능            | 메서드   | 엔드포인트                       |
+|-----------------|----------|----------------------------------|
+| 사용자 회원가입  | `POST`   | `/api/users`                     |
+| 사용자 로그인    | `POST`   | `/api/users/login`               |
+| 사용자 로그아웃  | `POST`   | `/api/users/logout`              |
+| 사용자 정보 조회 | `GET`    | `/api/users/{userId}`            |
+| 사용자 정보 수정 | `PUT`    | `/api/users/{userId}`            |
+| 사용자 비활성화  | `PATCH`  | `/api/users/{userId}/deactivate` |
+
+### 📝 **게시글 API**
+
+| 기능              | 메서드   | 엔드포인트                       |
+|-------------------|----------|----------------------------------|
+| 게시글 작성        | `POST`   | `/api/posts`                     |
+| 게시글 목록 조회   | `GET`    | `/api/posts`                     |
+| 특정 게시글 조회   | `GET`    | `/api/posts/{postId}`            |
+| 게시글 수정        | `PUT`    | `/api/posts/{postId}`            |
+| 게시글 삭제        | `DELETE` | `/api/posts/{postId}`            |
+| 게시글 좋아요      | `POST`   | `/api/posts/{postId}/like`       |
+| 게시글 좋아요 취소 | `DELETE` | `/api/posts/{postId}/like`       |
+
+### 💬 **댓글 및 답글 API**
+
+| 기능                | 메서드   | 엔드포인트                           |
+|---------------------|----------|--------------------------------------|
+| 댓글/답글 작성       | `POST`   | `/api/posts/{postId}/comments`       |
+| 댓글/답글 목록 조회  | `GET`    | `/api/posts/{postId}/comments`       |
+| 댓글/답글 수정       | `PUT`    | `/api/comments/{commentId}`          |
+| 댓글/답글 삭제       | `DELETE` | `/api/comments/{commentId}`          |
+| 댓글/답글 좋아요     | `POST`   | `/api/comments/{commentId}/like`     |
+| 댓글/답글 좋아요 취소 | `DELETE` | `/api/comments/{commentId}/like`     |
