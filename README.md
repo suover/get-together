@@ -74,3 +74,73 @@
 | 댓글/답글 삭제       | `DELETE` | `/api/comments/{commentId}`          |
 | 댓글/답글 좋아요     | `POST`   | `/api/comments/{commentId}/like`     |
 | 댓글/답글 좋아요 취소 | `DELETE` | `/api/comments/{commentId}/like`     |
+
+## 🎯 **미션**
+<details>
+
+<summary> [미션4] 조회 REST API 만들기 </summary>
+
+## 조회 REST API 및 테스트 코드
+이번 미션에서는 게시글 조회 REST API를 개발하고, 이를 검증하기 위한 테스트 코드를 작성했습니다.  
+API는 전체 게시글 조회와 특정 게시글 조회 두 가지 기능을 제공합니다.
+
+## API 엔드포인트 설명
+
+### 1. 전체 게시글 조회
+- **경로:** `GET /api/posts`
+- **설명:** 전체 게시글을 조회하여 반환합니다.
+- **응답 예시**
+  ```json
+    {
+      "postId": 1,
+      "title": "제목 1",
+      "content": "내용 1",
+      "userId": 1,
+      "categoryId": 1,
+      "viewCount": 100,
+      "createdAt": "2024-10-10T10:00:00"
+    }
+  ```
+
+### 2. 특정 게시글 조회
+- **경로:** `GET /api/posts/{postId}`
+- **설명:** 특정 `postId`에 해당하는 게시글 정보를 반환합니다.
+- **응답 예시**
+  ```json
+    {
+      "postId": 3,
+      "title": "제목 3",
+      "content": "내용 3",
+      "userId": 1,
+      "categoryId": 1,
+      "viewCount": 100,
+      "createdAt": "2024-10-10T10:00:00"
+    }
+  ```
+
+## 테스트 클래스 설명
+
+1. **PostControllerTest**
+    - **설명:** `PostController` 클래스에 대한 단위 테스트로, 컨트롤러 계층에서 API 요청이 예상대로 처리되는지 검증합니다.
+    - **테스트 항목**
+        - **모든 게시글 조회:** `/api/posts` 엔드포인트가 모든 게시글을 정상적으로 반환하는지 확인.
+        - **특정 게시글 ID 조회:** `/api/posts/{postId}`로 특정 게시글을 정확하게 반환하는지 확인.
+        - **게시글이 없는 경우 조회:** 게시글이 없는 경우, 빈 리스트를 반환하는지 확인.
+
+2. **PostRepositoryTest**
+    - **설명:** 데이터베이스와 직접 상호작용하는 `PostRepository`를 테스트하여 데이터 접근 계층의 기능이 올바르게 동작하는지 확인합니다.
+    - **테스트 항목**
+        - **모든 게시글 조회:** `findAll()` 메서드로 모든 게시글을 정상적으로 조회하는지 확인.
+        - **특정 게시글 ID 조회:** `findById()`로 특정 게시글을 조회할 수 있는지 확인.
+        - **게시글이 없는 경우 조회:** 데이터베이스에 게시글이 없는 경우, 빈 리스트가 반환되는지 확인.
+
+3. **PostServiceTest**
+    - **설명:** `PostService` 클래스의 비즈니스 로직을 검증하여, 서비스 계층에서 데이터가 정상적으로 처리되고 반환되는지 확인합니다.
+    - **테스트 항목**
+        - **모든 게시글 조회:** `getAllPosts()` 메서드를 통해 모든 게시글을 정상적으로 가져오는지 확인.
+        - **특정 게시글 ID 조회:** `getPostById()` 메서드를 통해 특정 게시글이 정확하게 반환되는지 확인.
+        - **게시글이 없는 경우 조회:** 게시글이 없을 때, 빈 리스트가 반환되는지 확인.
+
+      ![{3FE8CBBB-7936-401A-ABF3-A5DEC0A881A0}](https://github.com/user-attachments/assets/5abe4619-b4e8-4ab8-ba3a-9979034c9d9a)
+
+</details>
