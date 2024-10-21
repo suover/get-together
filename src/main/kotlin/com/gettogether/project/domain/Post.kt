@@ -16,20 +16,20 @@ data class Post(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "category_id")
-        val category: Category? = null,
+        var category: Category? = null,
 
         @Column(nullable = false)
-        val title: String,
+        var title: String,
 
         @Column(nullable = false, columnDefinition = "TEXT")
-        val content: String,
+        var content: String,
 
         @Column(name = "view_count", nullable = false)
-        val viewCount: Int = 0,
+        var viewCount: Int = 0,
 
         @Column(name = "created_at", nullable = false)
         val createdAt: LocalDateTime = LocalDateTime.now(),
 
         @Column(name = "updated_at")
-        val updatedAt: LocalDateTime? = null
+        var updatedAt: LocalDateTime? = null
 )
