@@ -14,10 +14,15 @@ import java.time.LocalDateTime
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostRepositoryTest @Autowired constructor(
-        private val postRepository: PostRepository,
-        private val userRepository: UserRepository,
-        private val categoryRepository: CategoryRepository
+    private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository
 ) {
+
+    /**
+     * todo
+     * 스프링 데이터 JPA 리포지토리 테스트는 안 해도 좋습니다.
+     */
 
     private lateinit var user: User
     private lateinit var category: Category
@@ -26,23 +31,23 @@ class PostRepositoryTest @Autowired constructor(
     @BeforeAll
     fun setup() {
         user = userRepository.save(User(
-                email = "test@example.com",
-                password = "password",
-                name = "테스트 유저",
-                nickname = "닉네임",
-                createdAt = LocalDateTime.now()
+            email = "test@example.com",
+            password = "password",
+            name = "테스트 유저",
+            nickname = "닉네임",
+            createdAt = LocalDateTime.now()
         ))
 
         category = categoryRepository.save(Category(name = "카테고리"))
 
         posts = (1..10).map {
             Post(
-                    id = it.toLong(),
-                    title = "제목 $it",
-                    content = "내용 $it",
-                    user = user,
-                    category = category,
-                    createdAt = LocalDateTime.now()
+                id = it.toLong(),
+                title = "제목 $it",
+                content = "내용 $it",
+                user = user,
+                category = category,
+                createdAt = LocalDateTime.now()
             )
         }
 

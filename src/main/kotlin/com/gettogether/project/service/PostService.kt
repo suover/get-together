@@ -6,6 +6,7 @@ import com.gettogether.project.repository.UserRepository
 import com.gettogether.project.repository.CategoryRepository
 import com.gettogether.project.dto.PostRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.NoSuchElementException
 
 /**
@@ -17,17 +18,30 @@ import java.util.NoSuchElementException
  */
 @Service
 class PostService(
-        private val postRepository: PostRepository,
-        private val userRepository: UserRepository,
-        private val categoryRepository: CategoryRepository
+    private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository
 ) {
+
+    /**
+     * todo
+     * 트랜잭션을 명시하지 않은 이유가 있을까요?
+     */
 
     /**
      * 전체 게시글을 조회합니다.
      *
      * @return 모든 게시글을 포함하는 리스트
      */
+    @Transactional
     fun getAllPosts(): List<Post> {
+        /**
+         * todo
+         * '모든' 게시글을 조회하는 기능은 커뮤니티에 있어서는 안 됩니다.
+         * 커뮤니티에 몇개의 게시글이 있을까요?
+         * val pageable = PageRequest.of(0, 10)
+         * postRepository.findAll(pageable)
+         */
         return postRepository.findAll()
     }
 
@@ -38,9 +52,13 @@ class PostService(
      * @return 게시글 ID에 해당하는 게시글
      * @throws NoSuchElementException 게시글이 존재하지 않을 경우 발생
      */
+    /**
+     * todo
+     * get과 find의 차이
+     */
     fun getPostById(postId: Long): Post {
         return postRepository.findById(postId)
-                .orElseThrow { NoSuchElementException("해당 게시글 ID의 게시글이 존재하지 않습니다: $postId") }
+            .orElseThrow { NoSuchElementException("해당 게시글 ID의 게시글이 존재하지 않습니다: $postId") }
     }
 
     /**
@@ -51,16 +69,16 @@ class PostService(
      */
     fun createPost(request: PostRequest): Post {
         val user = userRepository.findById(request.userId)
-                .orElseThrow { NoSuchElementException("사용자를 찾을 수 없습니다.") }
+            .orElseThrow { NoSuchElementException("사용자를 찾을 수 없습니다.") }
 
         val category = categoryRepository.findById(request.categoryId)
-                .orElseThrow { NoSuchElementException("카테고리를 찾을 수 없습니다.") }
+            .orElseThrow { NoSuchElementException("카테고리를 찾을 수 없습니다.") }
 
         val post = Post(
-                user = user,
-                category = category,
-                title = request.title,
-                content = request.content
+            user = user,
+            category = category,
+            title = request.title,
+            content = request.content
         )
         return postRepository.save(post)
     }
@@ -74,10 +92,10 @@ class PostService(
      */
     fun updatePost(postId: Long, request: PostRequest): Post {
         val post = postRepository.findById(postId)
-                .orElseThrow { NoSuchElementException("해당 게시글이 존재하지 않습니다.") }
+            .orElseThrow { NoSuchElementException("해당 게시글이 존재하지 않습니다.") }
 
         val category = categoryRepository.findById(request.categoryId)
-                .orElseThrow { NoSuchElementException("카테고리를 찾을 수 없습니다.") }
+            .orElseThrow { NoSuchElementException("카테고리를 찾을 수 없습니다.") }
 
         post.title = request.title
         post.content = request.content
