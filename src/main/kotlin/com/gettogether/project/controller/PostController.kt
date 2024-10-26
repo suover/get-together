@@ -19,8 +19,16 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/posts")
 @Validated
 class PostController(
-        private val postService: PostService
+    private val postService: PostService
 ) {
+
+    /**
+     * todo
+     * 문서화 최고.
+     * 주석, API 명세, 리드미 모두 꼼꼼합니다.
+     *
+     * 영어 사용자가 아니면 주석 쓰는 게 좋습니다.
+     */
 
     /**
      * 모든 게시글을 조회합니다.
@@ -43,7 +51,7 @@ class PostController(
     @GetMapping("/{postId}")
     @Operation(summary = "특정 게시글 조회", description = "게시글 ID에 해당하는 특정 게시글을 조회합니다.")
     fun getPostById(
-            @PathVariable postId: Long
+        @PathVariable postId: Long
     ): ResponseEntity<Post> {
         val post = postService.getPostById(postId)
         return ResponseEntity.ok(post)
@@ -58,7 +66,7 @@ class PostController(
     @PostMapping
     @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")
     fun createPost(
-            @Valid @RequestBody request: PostRequest
+        @Valid @RequestBody request: PostRequest
     ): ResponseEntity<Post> {
         val createdPost = postService.createPost(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost)
@@ -74,8 +82,8 @@ class PostController(
     @PutMapping("/{postId}")
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
     fun updatePost(
-            @PathVariable postId: Long,
-            @Valid @RequestBody request: PostRequest
+        @PathVariable postId: Long,
+        @Valid @RequestBody request: PostRequest
     ): ResponseEntity<Post> {
         val updatedPost = postService.updatePost(postId, request)
         return ResponseEntity.ok(updatedPost)

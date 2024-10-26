@@ -23,6 +23,11 @@ import java.util.NoSuchElementException
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class PostControllerTest {
 
+    /**
+     * todo
+     * 서비스 모킹을 이용해 다양한 인터페이스 케이스를 테스트 잘 했습니다.
+     */
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -39,20 +44,20 @@ class PostControllerTest {
         reset(postService)
 
         val user = User(
-                email = "test@example.com",
-                password = "password",
-                name = "테스트 유저",
-                nickname = "닉네임",
-                createdAt = LocalDateTime.now()
+            email = "test@example.com",
+            password = "password",
+            name = "테스트 유저",
+            nickname = "닉네임",
+            createdAt = LocalDateTime.now()
         )
 
         posts = (1..10).map {
             Post(
-                    id = it.toLong(),
-                    title = "제목 $it",
-                    content = "내용 $it",
-                    user = user,
-                    createdAt = LocalDateTime.now()
+                id = it.toLong(),
+                title = "제목 $it",
+                content = "내용 $it",
+                user = user,
+                createdAt = LocalDateTime.now()
             )
         }
         `when`(postService.getAllPosts()).thenReturn(posts)
@@ -65,10 +70,10 @@ class PostControllerTest {
     @Test
     fun `모든 게시글 조회 테스트`() {
         val result = mockMvc.perform(get("/api/posts"))
-                .andExpect(status().isOk)
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.length()").value(10))
-                .andReturn()
+            .andExpect(status().isOk)
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$.length()").value(10))
+            .andReturn()
 
         println("----- 모든 게시글 조회 -----")
         println("상태 코드: ${result.response.status} (OK - 요청이 성공적으로 처리되었습니다.)")
@@ -80,17 +85,20 @@ class PostControllerTest {
 
     @Test
     fun `특정 게시글 ID로 조회 테스트`() {
+
+        // given
         val postId = 3L
         val specificPost = posts.first { it.id == postId }
         `when`(postService.getPostById(postId)).thenReturn(specificPost)
 
+        // when
         val result = mockMvc.perform(get("/api/posts/$postId"))
-                .andExpect(status().isOk)
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.id").value(postId))
-                .andExpect(jsonPath("$.title").value(specificPost.title))
-                .andExpect(jsonPath("$.content").value(specificPost.content))
-                .andReturn()
+            .andExpect(status().isOk)
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$.id").value(postId))
+            .andExpect(jsonPath("$.title").value(specificPost.title))
+            .andExpect(jsonPath("$.content").value(specificPost.content))
+            .andReturn()
 
         println("----- Post ID가 ${postId}인 게시글 조회 -----")
         println("상태 코드: ${result.response.status} (OK - 요청이 성공적으로 처리되었습니다.)")
@@ -104,11 +112,13 @@ class PostControllerTest {
         `when`(postService.getAllPosts()).thenReturn(emptyPosts)
 
         val result = mockMvc.perform(get("/api/posts"))
-                .andExpect(status().isOk)
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.length()").value(0))
-                .andReturn()
+            .andExpect(status().isOk)
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$.length()").value(0))
+            .andReturn()
 
+        // then
+//        Assertions.assertThat()
         println("----- 게시글이 없는 경우 -----")
         println("상태 코드: ${result.response.status} (OK - 요청은 성공적으로 처리되었으나, 데이터가 없습니다.)")
         println("조회된 게시글 개수: ${emptyPosts.size}")
@@ -127,13 +137,13 @@ class PostControllerTest {
         `when`(postService.createPost(request)).thenReturn(savedPost)
 
         val result = mockMvc.perform(post("/api/posts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated)
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value(request.title))
-                .andExpect(jsonPath("$.content").value(request.content))
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated)
+            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.title").value(request.title))
+            .andExpect(jsonPath("$.content").value(request.content))
+            .andReturn()
 
         println("----- 게시글 삽입 성공 -----")
         println("상태 코드: ${result.response.status} (Created - 새 자원이 성공적으로 생성되었습니다.)")
@@ -146,10 +156,10 @@ class PostControllerTest {
         val request = PostRequest(userId = 1L, categoryId = 1L, title = "", content = "")
 
         val result = mockMvc.perform(post("/api/posts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest)
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest)
+            .andReturn()
 
         println("----- 게시글 삽입 실패 - 필수 값 누락 -----")
         println("상태 코드: ${result.response.status} (Bad Request - 요청이 잘못되었습니다.)")
@@ -164,10 +174,10 @@ class PostControllerTest {
         `when`(postService.createPost(request)).thenThrow(NoSuchElementException("카테고리를 찾을 수 없습니다."))
 
         val result = mockMvc.perform(post("/api/posts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound)
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound)
+            .andReturn()
 
         println("----- 게시글 삽입 실패 - 잘못된 카테고리 ID -----")
         println("상태 코드: ${result.response.status} (Not Found - 해당 자원을 찾을 수 없습니다.)")
@@ -188,12 +198,12 @@ class PostControllerTest {
         `when`(postService.updatePost(postId, request)).thenReturn(updatedPost)
 
         val result = mockMvc.perform(put("/api/posts/$postId")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$.title").value(request.title))
-                .andExpect(jsonPath("$.content").value(request.content))
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.title").value(request.title))
+            .andExpect(jsonPath("$.content").value(request.content))
+            .andReturn()
 
         println("----- 게시글 수정 성공 -----")
         println("상태 코드: ${result.response.status} (OK - 자원이 성공적으로 수정되었습니다.)")
@@ -209,10 +219,10 @@ class PostControllerTest {
         `when`(postService.updatePost(postId, request)).thenThrow(NoSuchElementException("해당 게시글이 존재하지 않습니다."))
 
         val result = mockMvc.perform(put("/api/posts/$postId")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound)
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound)
+            .andReturn()
 
         println("----- 게시글 수정 실패 - 존재하지 않는 게시글 ID -----")
         println("상태 코드: ${result.response.status} (Not Found - 해당 자원을 찾을 수 없습니다.)")
@@ -226,10 +236,10 @@ class PostControllerTest {
         val request = PostRequest(userId = 1L, categoryId = 1L, title = "", content = "")
 
         val result = mockMvc.perform(put("/api/posts/$postId")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest)
-                .andReturn()
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest)
+            .andReturn()
 
         println("----- 게시글 수정 실패 - 필수 값 누락 -----")
         println("상태 코드: ${result.response.status} (Bad Request - 요청이 잘못되었습니다.)")
@@ -248,8 +258,8 @@ class PostControllerTest {
         doNothing().`when`(postService).deletePost(postId)
 
         val result = mockMvc.perform(delete("/api/posts/$postId"))
-                .andExpect(status().isNoContent)
-                .andReturn()
+            .andExpect(status().isNoContent)
+            .andReturn()
 
         println("----- 게시글 삭제 성공 -----")
         println("상태 코드: ${result.response.status} (No Content - 요청이 성공적으로 처리되었으나, 응답 본문은 없습니다.)")
@@ -264,8 +274,8 @@ class PostControllerTest {
         `when`(postService.deletePost(postId)).thenThrow(NoSuchElementException("해당 게시글이 존재하지 않습니다."))
 
         val result = mockMvc.perform(delete("/api/posts/$postId"))
-                .andExpect(status().isNotFound)
-                .andReturn()
+            .andExpect(status().isNotFound)
+            .andReturn()
 
         println("----- 게시글 삭제 실패 - 존재하지 않는 게시글 ID -----")
         println("상태 코드: ${result.response.status} (Not Found - 해당 자원을 찾을 수 없습니다.)")
@@ -283,8 +293,8 @@ class PostControllerTest {
         doNothing().`when`(postService).deletePost(postId)
 
         val firstResult = mockMvc.perform(delete("/api/posts/$postId"))
-                .andExpect(status().isNoContent)
-                .andReturn()
+            .andExpect(status().isNoContent)
+            .andReturn()
 
         println("----- 게시글 첫 번째 삭제 성공 -----")
         println("상태 코드: ${firstResult.response.status} (No Content - 요청이 성공적으로 처리되었으나, 응답 본문은 없습니다.)")
@@ -294,8 +304,8 @@ class PostControllerTest {
         `when`(postService.deletePost(postId)).thenThrow(NoSuchElementException("해당 게시글이 존재하지 않습니다."))
 
         val secondResult = mockMvc.perform(delete("/api/posts/$postId"))
-                .andExpect(status().isNotFound)
-                .andReturn()
+            .andExpect(status().isNotFound)
+            .andReturn()
 
         println("----- 게시글 두 번째 삭제 실패 (이미 삭제됨) -----")
         println("상태 코드: ${secondResult.response.status} (Not Found - 해당 자원을 찾을 수 없습니다.)")

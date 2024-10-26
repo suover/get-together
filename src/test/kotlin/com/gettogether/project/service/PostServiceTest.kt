@@ -6,6 +6,7 @@ import com.gettogether.project.domain.User
 import com.gettogether.project.repository.CategoryRepository
 import com.gettogether.project.repository.PostRepository
 import com.gettogether.project.repository.UserRepository
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -19,36 +20,46 @@ import java.time.LocalDateTime
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 class PostServiceTest @Autowired constructor(
-        private val postService: PostService,
-        private val postRepository: PostRepository,
-        private val userRepository: UserRepository,
-        private val categoryRepository: CategoryRepository
+    private val postService: PostService,
+    private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository
 ) {
 
     private lateinit var user: User
     private lateinit var category: Category
     private lateinit var posts: List<Post>
 
+    /**
+     * todo
+     * 서비스의 경우 단위 테스트 중심으로 짜보세요.
+     * 그리고 테스트 커버리지를 채워보세요.
+     * 메소드가 얼마만큼 복잡한지 판단하는 것을 도와주고
+     * 응집도를 높이고 결합도를 낮추기 좋습니다.
+     *
+     * 예외를 던지는 경우를 테스트 하세요.
+     */
+
     @BeforeAll
     fun setup() {
         user = userRepository.save(User(
-                email = "test@example.com",
-                password = "password",
-                name = "테스트 유저",
-                nickname = "닉네임",
-                createdAt = LocalDateTime.now()
+            email = "test@example.com",
+            password = "password",
+            name = "테스트 유저",
+            nickname = "닉네임",
+            createdAt = LocalDateTime.now()
         ))
 
         category = categoryRepository.save(Category(name = "카테고리"))
 
         posts = (1..10).map {
             Post(
-                    id = it.toLong(),
-                    title = "제목 $it",
-                    content = "내용 $it",
-                    user = user,
-                    category = category,
-                    createdAt = LocalDateTime.now()
+                id = it.toLong(),
+                title = "제목 $it",
+                content = "내용 $it",
+                user = user,
+                category = category,
+                createdAt = LocalDateTime.now()
             )
         }
         postRepository.saveAll(posts)
@@ -72,6 +83,10 @@ class PostServiceTest @Autowired constructor(
         val specificPost = postService.getPostById(postId)
         assertThat(specificPost).isNotNull
         assertThat(specificPost.id).isEqualTo(postId)
+
+
+        val catchException = Assertions.catchException { postService.getPostById(postId) }
+        assertThat(catchException).isInstanceOf(RuntimeException::class.java)
 
         println("----- Post ID가 ${postId}인 게시글 조회 -----")
         println("Post ID: ${specificPost.id}, 제목: ${specificPost.title}, 내용: ${specificPost.content}")
